@@ -1,1 +1,5 @@
 streamlit
+pandas
+plotly
+streamlit_option_menu
+hydralit_components
