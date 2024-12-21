@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 def render_dashboard(data_manager) -> None:
     st.title("📊 Financial Dashboard")
     
+    currency_symbol = st.session_state.get("currency_symbol", "€")
+
     # Time Frame Selector
     time_frame = st.selectbox(
         "Select Time Frame",
@@ -73,7 +75,7 @@ def render_dashboard(data_manager) -> None:
                         "description": "Description",
                         "amount": st.column_config.NumberColumn(
                             "Amount",
-                            format="$%.2f"
+                            format=f"%.2f{currency_symbol}"
                         ),
                         "type": st.column_config.Column(
                             "Type",

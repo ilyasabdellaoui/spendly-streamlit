@@ -4,6 +4,8 @@ from datetime import datetime
 
 def render_operations(data_manager) -> None:
     st.title("💼 Operations Management")
+
+    currency_symbol = st.session_state.get("currency_symbol", "€")
     
     tab1, tab2, tab3, tab4 = st.tabs(["Upload CSV", "All Operations", "Search", "Edit"])
     
@@ -77,7 +79,7 @@ def render_operations(data_manager) -> None:
                     "description": "Description",
                     "amount": st.column_config.NumberColumn(
                         "Amount",
-                        format="$%.2f"
+                        format=f"%.2f{currency_symbol}"
                     ),
                     "type": "Type",
                     "category": "Category"
@@ -104,7 +106,7 @@ def render_operations(data_manager) -> None:
             selected_index = st.selectbox(
                 "Select operation to edit/delete",
                 range(len(df)),
-                format_func=lambda x: f"{df.iloc[x]['date']} - {df.iloc[x]['description']} (${df.iloc[x]['amount']:,.2f})"
+                format_func=lambda x: f"{df.iloc[x]['date']} - {df.iloc[x]['description']} ({df.iloc[x]['amount']:,.2f}{currency_symbol})"
             )
             
             if st.button("🗑️ Delete Operation", type="primary"):

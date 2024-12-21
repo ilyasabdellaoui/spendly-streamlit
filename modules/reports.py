@@ -4,6 +4,7 @@ from services.balance_calculator import BalanceCalculator
 
 def render_reports(data_manager) -> None:
     st.title("📑 Financial Reports")
+    currency_symbol = st.session_state.get("currency_symbol", "€")
     
     operations = data_manager.get_operations()
     if operations:
@@ -15,17 +16,17 @@ def render_reports(data_manager) -> None:
         with col1:
             st.metric(
                 "Total Income",
-                f"${df[df['type'] == 'income']['amount'].sum():,.2f}"
+                f"{df[df['type'] == 'income']['amount'].sum():,.2f}{currency_symbol}"
             )
         with col2:
             st.metric(
                 "Total Expenses",
-                f"${df[df['type'] == 'expense']['amount'].sum():,.2f}"
+                f"{df[df['type'] == 'expense']['amount'].sum():,.2f}{currency_symbol}"
             )
         with col3:
             st.metric(
                 "Net Balance",
-                f"${BalanceCalculator.calculate_total_balance(operations):,.2f}"
+                f"{BalanceCalculator.calculate_total_balance(operations):,.2f}{currency_symbol}"
             )
         with col4:
             st.metric(

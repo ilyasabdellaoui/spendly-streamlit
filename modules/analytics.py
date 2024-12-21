@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 
 def render_analytics(data_manager) -> None:
     st.title("📈 Financial Analytics")
+
+    currency_symbol = st.session_state.get("currency_symbol", "€")
     
     operations = data_manager.get_operations()
     if operations:
@@ -36,7 +38,7 @@ def render_analytics(data_manager) -> None:
                         "category": "Category",
                         "amount": st.column_config.NumberColumn(
                             "Amount",
-                            format="$%.2f"
+                            format=f"%.2f{currency_symbol}"
                         )
                     },
                     hide_index=True

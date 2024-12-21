@@ -46,6 +46,7 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
 
     # Get dynamic period label
     period_label = get_period_label(current_start, current_end)
+    currency_symbol = st.session_state.get("currency_symbol", "€")
 
     col1, col2, col3 = st.columns(3)
 
@@ -54,15 +55,15 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
         if current_net > 0:
             st.metric(
                 "Current Balance",
-                f"${current_balance:,.2f}",
-                delta=f"${current_net:,.2f} {period_label}",
+                f"{current_balance:,.2f}{currency_symbol}",
+                delta=f"{current_net:,.2f} {period_label}{currency_symbol}",
                 delta_color="normal"
             )
         else:
             st.metric(
                 "Current Balance",
-                f"${current_balance:,.2f}",
-                delta=f"${current_net:,.2f} {period_label}",
+                f"{current_balance:,.2f}{currency_symbol}",
+                delta=f"{current_net:,.2f} {period_label}{currency_symbol}",
                 delta_color="inverse"
             )
 
@@ -70,8 +71,8 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
         expense_change = -abs(previous_expenses - current_expenses)
         st.metric(
             "Period Expenses",
-            f"${current_expenses:,.2f}",
-            delta=f"${expense_change:,.2f}",
+            f"{current_expenses:,.2f}{currency_symbol}",
+            delta=f"{expense_change:,.2f}{currency_symbol}",
             delta_color="inverse"
         )
 
@@ -83,7 +84,7 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
             amount = -latest_transaction['amount'] if tx_type == "expense" else latest_transaction['amount']
             st.metric(
                 "Latest Transaction",
-                f"${amount:,.2f}",
+                f"{amount:,.2f}{currency_symbol}",
                 delta=tx_type.capitalize(),
                 delta_color=delta_color
             )

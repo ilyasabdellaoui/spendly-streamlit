@@ -3,7 +3,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
+*{currency_symbol}py.class
 
 # C extensions
 *.so
