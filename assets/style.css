@@ -1,0 +1,13 @@
+.stButton>button {
+    width: 100%;
+}
+.reportview-container {
+    margin-top: -2rem;
+}
+.stDeployButton {display:none;}
+footer {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+div[data-testid="stToolbar"] {visibility: hidden;}
+div[data-testid="stDecoration"] {visibility: hidden;}
+div[data-testid="stStatusWidget"] {visibility: hidden;}
+#stDateInput>div>div>input {text-align: left;}
