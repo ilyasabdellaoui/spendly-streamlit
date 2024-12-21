@@ -1,64 +1,89 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
 
-def render_key_metrics(data_manager, time_frame: str) -> None:
+def get_period_label(start_date, end_date):
+    delta_days = (end_date - start_date).days
+    
+    if delta_days == 0:
+        return "today"
+    elif delta_days == 1:
+        return "this day"
+    elif delta_days == 7:
+        return "this week"
+    elif delta_days in [28, 29, 30, 31]:
+        return "this month"
+    elif delta_days in [90, 91, 92]:
+        return "this quarter"
+    elif delta_days in [365, 366]:
+        return "this year"
+    else:
+        return f"these {delta_days} days"
+
+def render_key_metrics(data_manager, start_date, end_date) -> None:
     operations = data_manager.get_operations()
     if not operations:
         return
-    
+
     df = pd.DataFrame(operations)
     df['date'] = pd.to_datetime(df['date'])
+
+    # Ensure dates are datetime objects
+    current_start = pd.to_datetime(start_date)
+    current_end = pd.to_datetime(end_date)
     
-    # Calculate period boundaries
-    now = datetime.now()
-    if time_frame == "Week":
-        current_start = now - pd.DateOffset(weeks=1)
-        previous_start = current_start - pd.DateOffset(weeks=1)
-    elif time_frame == "Month":
-        current_start = now - pd.DateOffset(months=1)
-        previous_start = current_start - pd.DateOffset(months=1)
-    elif time_frame == "Year":
-        current_start = now - pd.DateOffset(years=1)
-        previous_start = current_start - pd.DateOffset(years=1)
-    
-    # Calculate metrics for current period
-    current_df = df[df['date'] >= current_start]
+    # Calculate previous period
+    period_length = (current_end - current_start)
+    previous_start = current_start - period_length
+    previous_end = current_start
+
+    current_df = df[(df['date'] >= current_start) & (df['date'] <= current_end)]
     current_income = current_df[current_df['type'] == 'income']['amount'].sum()
     current_expenses = current_df[current_df['type'] == 'expense']['amount'].sum()
     current_net = current_income - current_expenses
-    
-    # Calculate metrics for previous period
-    previous_df = df[(df['date'] >= previous_start) & (df['date'] < current_start)]
-    previous_income = previous_df[previous_df['type'] == 'income']['amount'].sum()
+
+    previous_df = df[(df['date'] >= previous_start) & (df['date'] < previous_end)]
     previous_expenses = previous_df[previous_df['type'] == 'expense']['amount'].sum()
-    
+
+    # Get dynamic period label
+    period_label = get_period_label(current_start, current_end)
+
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         current_balance = data_manager.get_current_balance()
-        st.metric(
-            "Current Balance",
-            f"${current_balance:,.2f}",
-            delta=f"${current_net:,.2f} this {time_frame.lower()}"
-        )
-    
+        if current_net > 0:
+            st.metric(
+                "Current Balance",
+                f"${current_balance:,.2f}",
+                delta=f"${current_net:,.2f} {period_label}",
+                delta_color="normal"
+            )
+        else:
+            st.metric(
+                "Current Balance",
+                f"${current_balance:,.2f}",
+                delta=f"${current_net:,.2f} {period_label}",
+                delta_color="inverse"
+            )
+
     with col2:
-        expense_change = previous_expenses - current_expenses  # Note: reversed for intuitive display
+        expense_change = -abs(previous_expenses - current_expenses)
         st.metric(
-            f"{time_frame}'s Expenses",
+            "Period Expenses",
             f"${current_expenses:,.2f}",
             delta=f"${expense_change:,.2f}",
-            delta_color="inverse"  # Lower expenses are good
+            delta_color="inverse"
         )
-    
+
     with col3:
         latest_transaction = current_df.iloc[-1] if not current_df.empty else None
         if latest_transaction is not None:
-            amount = latest_transaction['amount']
             tx_type = latest_transaction['type']
+            delta_color = "normal" if tx_type == "income" else "off"
+            amount = -latest_transaction['amount'] if tx_type == "expense" else latest_transaction['amount']
             st.metric(
                 "Latest Transaction",
                 f"${amount:,.2f}",
-                delta=tx_type.capitalize()
+                delta=tx_type.capitalize(),
+                delta_color=delta_color
             )

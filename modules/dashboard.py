@@ -9,11 +9,34 @@ def render_dashboard(data_manager) -> None:
     # Time Frame Selector
     time_frame = st.selectbox(
         "Select Time Frame",
-        ["Week", "Month", "Year"]
+        ["Week", "Month", "Quarter", "Year", "Custom"]
     )
     
-    # Render Key Metrics
-    render_key_metrics(data_manager, time_frame)
+    # Get date range based on selection
+    end_date = datetime.now()
+    
+    if time_frame == "Custom":
+        date_range = st.date_input(
+            "Select date range",
+            value=(end_date - timedelta(days=7), end_date),
+            max_value=end_date
+        )
+        if len(date_range) == 2:
+            start_date, end_date = date_range
+        else:
+            start_date = end_date - timedelta(days=7)
+    else:
+        if time_frame == "Week":
+            start_date = end_date - timedelta(days=7)
+        elif time_frame == "Month":
+            start_date = end_date - timedelta(days=30)
+        elif time_frame == "Quarter":
+            start_date = end_date - timedelta(days=90)
+        else:  # Last year
+            start_date = end_date - timedelta(days=365)
+    
+    # Render Key Metrics with guaranteed non-None dates
+    render_key_metrics(data_manager, start_date, end_date)
     
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -31,20 +54,9 @@ def render_dashboard(data_manager) -> None:
             if "date" in df.columns:
                 df["date"] = pd.to_datetime(df["date"])
             
-            # Calculate date range for the selected time frame
-            now = datetime.now()
-            if time_frame == "Week":
-                start_date = now - timedelta(weeks=1)
-                end_date = now
-            elif time_frame == "Month":
-                start_date = now - timedelta(days=30)
-                end_date = now
-            else:  # Year
-                start_date = now - timedelta(days=365)
-                end_date = now
-            
-            # Filter operations by the time frame
-            filtered_df = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
+            # Filter operations by the selected date range
+            filtered_df = df[(df["date"] >= pd.to_datetime(start_date)) & 
+                           (df["date"] <= pd.to_datetime(end_date))]
             
             # Reverse order of operations (latest first)
             filtered_df = filtered_df.sort_values(by="date", ascending=False)
@@ -54,19 +66,30 @@ def render_dashboard(data_manager) -> None:
                 st.dataframe(
                     filtered_df,
                     column_config={
-                        "date": "Date",
+                        "date": st.column_config.DatetimeColumn(
+                            "Date",
+                            format="MMM DD, YYYY"
+                        ),
                         "description": "Description",
                         "amount": st.column_config.NumberColumn(
                             "Amount",
                             format="$%.2f"
                         ),
-                        "type": "Type",
-                        "category": "Category"
+                        "type": st.column_config.Column(
+                            "Type",
+                            width="small"
+                        ),
+                        "category": st.column_config.Column(
+                            "Category",
+                            width="small"
+                        )
                     },
                     hide_index=True
                 )
+                
+                st.caption(f"Showing transactions from {start_date.strftime('%B %d, %Y')} to {end_date.strftime('%B %d, %Y')}")
             else:
-                st.info(f"No recent activity for the selected period ({time_frame.lower()}).")
+                st.info(f"No activity found between {start_date.strftime('%B %d, %Y')} and {end_date.strftime('%B %d, %Y')}")
         else:
             st.info("No recent activity.")
     
