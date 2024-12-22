@@ -1,3 +1,4 @@
+# components/quick_add_form.py
 import streamlit as st
 from datetime import datetime
 
@@ -9,19 +10,23 @@ def render_quick_add_form(data_manager) -> None:
         with col1:
             op_type = st.selectbox("Type", ['expense', 'income'])
         with col2:
-            category = st.selectbox(
-                "Category", 
-                ['Food', 'Transport', 'Housing', 'Entertainment', 'Utilities', 'Salary', 'Other']
-            )
+            # Get categories from database
+            categories = data_manager.get_categories()
+            default_categories = ['Food', 'Transport', 'Housing', 'Entertainment', 'Utilities', 'Salary', 'Other']
+            category_list = categories if categories else default_categories
+            category = st.selectbox("Category", category_list)
         
         if st.form_submit_button("Add Transaction", use_container_width=True):
-            new_operation = {
-                'date': datetime.now().strftime('%Y-%m-%d'),
-                'description': description,
-                'amount': amount,
-                'type': op_type,
-                'category': category
-            }
-            data_manager.add_operation(new_operation)
-            st.success("Transaction added!")
-            st.rerun()
+            try:
+                new_operation = {
+                    'date': datetime.now().strftime('%Y-%m-%d'),
+                    'description': description,
+                    'amount': amount,
+                    'type': op_type,
+                    'category': category
+                }
+                data_manager.add_operation(new_operation)
+                st.success("Transaction added!")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error adding transaction: {str(e)}")

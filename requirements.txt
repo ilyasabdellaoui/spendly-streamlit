@@ -3,3 +3,6 @@ pandas
 plotly
 streamlit_option_menu
 hydralit_components
+sqlalchemy>=1.4.0
+psycopg2-binary>=2.9.0
+python-dotenv>=0.19.0

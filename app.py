@@ -1,6 +1,6 @@
 import streamlit as st
 from pathlib import Path
-from services.data_manager import DataManager, JSONStorage
+from services.data_manager import DataManager, PostgresStorage
 from components.sidebar import render_sidebar
 import modules.dashboard as dashboard
 import modules.operations as operations
@@ -23,7 +23,7 @@ if css_path.exists():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Initialize services
-storage = JSONStorage()
+storage = PostgresStorage()
 data_manager = DataManager(storage)
 
 # Render sidebar and get selected page
