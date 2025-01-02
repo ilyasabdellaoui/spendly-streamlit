@@ -1,5 +1,6 @@
 # app.py
 import streamlit as st
+import os
 from pathlib import Path
 from services.data_manager import DataManager
 from services.api_manager import APIStorage
