@@ -1,3 +1,4 @@
+# components/metrics_display.py
 import streamlit as st
 import pandas as pd
 
@@ -25,7 +26,7 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
         return
 
     df = pd.DataFrame(operations)
-    df['date'] = pd.to_datetime(df['date'])
+    df['entry_date'] = pd.to_datetime(df['entry_date'])  # Use 'entry_date' instead of 'date'
 
     # Ensure dates are datetime objects
     current_start = pd.to_datetime(start_date)
@@ -36,12 +37,12 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
     previous_start = current_start - period_length
     previous_end = current_start
 
-    current_df = df[(df['date'] >= current_start) & (df['date'] <= current_end)]
+    current_df = df[(df['entry_date'] >= current_start) & (df['entry_date'] <= current_end)]
     current_income = current_df[current_df['type'] == 'income']['amount'].sum()
     current_expenses = current_df[current_df['type'] == 'expense']['amount'].sum()
     current_net = current_income - current_expenses
 
-    previous_df = df[(df['date'] >= previous_start) & (df['date'] < previous_end)]
+    previous_df = df[(df['entry_date'] >= previous_start) & (df['entry_date'] < previous_end)]
     previous_expenses = previous_df[previous_df['type'] == 'expense']['amount'].sum()
 
     # Get dynamic period label

@@ -1,3 +1,4 @@
+# modules/dashboard.py
 import streamlit as st
 from components.quick_add_form import render_quick_add_form
 from components.metrics_display import render_key_metrics
@@ -52,23 +53,23 @@ def render_dashboard(data_manager) -> None:
             # Convert operations into a DataFrame
             df = pd.DataFrame(operations)
             
-            # Ensure 'date' column is in datetime format
-            if "date" in df.columns:
-                df["date"] = pd.to_datetime(df["date"])
+            # Ensure 'entry_date' column is in datetime format
+            if "entry_date" in df.columns:
+                df["entry_date"] = pd.to_datetime(df["entry_date"])
             
             # Filter operations by the selected date range
-            filtered_df = df[(df["date"] >= pd.to_datetime(start_date)) & 
-                           (df["date"] <= pd.to_datetime(end_date))]
+            filtered_df = df[(df["entry_date"] >= pd.to_datetime(start_date)) & 
+                           (df["entry_date"] <= pd.to_datetime(end_date))]
             
             # Reverse order of operations (latest first)
-            filtered_df = filtered_df.sort_values(by="date", ascending=False)
+            filtered_df = filtered_df.sort_values(by="entry_date", ascending=False)
             
             # Display the filtered DataFrame
             if not filtered_df.empty:
                 st.dataframe(
                     filtered_df,
                     column_config={
-                        "date": st.column_config.DatetimeColumn(
+                        "entry_date": st.column_config.DatetimeColumn(
                             "Date",
                             format="MMM DD, YYYY"
                         ),
