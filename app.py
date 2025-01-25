@@ -39,19 +39,21 @@ data_manager = DataManager(storage)
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
-# Centralized routing logic
-selected_page = render_sidebar(data_manager)
-
-# Render the selected page
-if selected_page == "login":
+# Check if user is logged in, if not, show login modal with overlay
+if not st.session_state.get("logged_in"):
     login.render_login(storage)
-elif selected_page == "dashboard":
-    dashboard.render_dashboard(data_manager)
-elif selected_page == "operations":
-    operations.render_operations(data_manager)
-elif selected_page == "analytics":
-    analytics.render_analytics(data_manager)
-elif selected_page == "reports":
-    reports.render_reports(data_manager)
-elif selected_page == "settings":
-    settings.render_settings(data_manager)
+else:
+    # Centralized routing logic
+    selected_page = render_sidebar(data_manager)
+
+    # Render the selected page
+    if selected_page == "dashboard":
+        dashboard.render_dashboard(data_manager)
+    elif selected_page == "operations":
+        operations.render_operations(data_manager)
+    elif selected_page == "analytics":
+        analytics.render_analytics(data_manager)
+    elif selected_page == "reports":
+        reports.render_reports(data_manager)
+    elif selected_page == "settings":
+        settings.render_settings(data_manager)

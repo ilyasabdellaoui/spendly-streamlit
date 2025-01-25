@@ -1,13 +1,116 @@
-.stButton>button {
+/* assets/style.css */
+
+/* General Styles */
+.stButton > button {
     width: 100%;
 }
+
 .reportview-container {
     margin-top: -2rem;
 }
-.stDeployButton {display:none;}
-footer {visibility: hidden;}
-#MainMenu {visibility: hidden;}
-div[data-testid="stToolbar"] {visibility: hidden;}
-div[data-testid="stDecoration"] {visibility: hidden;}
-div[data-testid="stStatusWidget"] {visibility: hidden;}
-#stDateInput>div>div>input {text-align: left;}
+
+.stDeployButton {
+    display: none;
+}
+
+footer {
+    visibility: hidden;
+}
+
+#MainMenu {
+    visibility: hidden;
+}
+
+div[data-testid="stToolbar"] {
+    visibility: hidden;
+}
+
+div[data-testid="stDecoration"] {
+    visibility: hidden;
+}
+
+div[data-testid="stStatusWidget"] {
+    visibility: hidden;
+}
+
+#stDateInput > div > div > input {
+    text-align: left;
+}
+
+/* Login Form Styles */
+.stLogin {
+    max-width: 400px;
+    margin: 5rem auto; /* Added more vertical spacing */
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: none; /* Ensure background is white */
+}
+
+.stLogin h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333; /* Darker text for better contrast */
+}
+
+/* Input Fields */
+.stTextInput input,
+.stTextInput input:focus {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.3s ease; /* Smooth transition for focus */
+}
+
+.stTextInput input:focus {
+    border-color: #4CAF50; /* Highlight input on focus */
+}
+
+/* Login Button */
+.stButton button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stButton button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Error Message */
+.stError {
+    color: #ff4b4b;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    text-align: center; /* Center error messages */
+}
+
+/* Loading Spinner */
+.stSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .stLogin {
+        padding: 1.5rem;
+        margin: 2rem auto; /* Adjust margin for smaller screens */
+    }
+
+    .stLogin h1 {
+        font-size: 1.5rem; /* Smaller title for mobile */
+    }
+}

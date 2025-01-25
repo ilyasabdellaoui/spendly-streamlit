@@ -5,7 +5,7 @@ def render_sidebar(data_manager) -> str:
     st.sidebar.title("Finance Manager 💰")
     
     # Navigation options
-    pages = ["Dashboard", "Operations", "Analytics", "Reports", "Settings", "Login"]
+    pages = ["Dashboard", "Operations", "Analytics", "Reports", "Settings"]
     selected = st.sidebar.radio(
         "Navigate",
         pages,
