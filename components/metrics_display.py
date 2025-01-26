@@ -26,7 +26,7 @@ def render_key_metrics(data_manager, start_date, end_date) -> None:
         return
 
     df = pd.DataFrame(operations)
-    df['entry_date'] = pd.to_datetime(df['entry_date'])  # Use 'entry_date' instead of 'date'
+    df['entry_date'] = pd.to_datetime(df['entry_date'])  # Use 'entry_date' instead of 'entry_date'
 
     # Ensure dates are datetime objects
     current_start = pd.to_datetime(start_date)

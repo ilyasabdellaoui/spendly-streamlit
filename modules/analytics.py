@@ -11,7 +11,7 @@ def render_analytics(data_manager) -> None:
     operations = data_manager.get_operations()
     if operations:
         df = pd.DataFrame(operations)
-        df['date'] = pd.to_datetime(df['date'])
+        df['entry_date'] = pd.to_datetime(df['entry_date'])
         
         tab1, tab2, tab3 = st.tabs(["Category Analysis", "Time Analysis", "Trends"])
         
@@ -46,7 +46,7 @@ def render_analytics(data_manager) -> None:
         
         with tab2:
             st.subheader("Monthly Trends")
-            df['month'] = df['date'].dt.strftime('%Y-%m')
+            df['month'] = df['entry_date'].dt.strftime('%Y-%m')
             monthly_data = df.pivot_table(
                 index='month',
                 columns='type',
@@ -72,7 +72,7 @@ def render_analytics(data_manager) -> None:
         
         with tab3:
             st.subheader("Balance Trend")
-            df_sorted = df.sort_values('date')
+            df_sorted = df.sort_values('entry_date')
             df_sorted['cumulative_balance'] = df_sorted.apply(
                 lambda x: x['amount'] if x['type'] == 'income' else -x['amount'],
                 axis=1
@@ -80,7 +80,7 @@ def render_analytics(data_manager) -> None:
             
             fig = px.line(
                 df_sorted,
-                x='date',
+                x='entry_date',
                 y='cumulative_balance',
                 title='Balance Over Time'
             )

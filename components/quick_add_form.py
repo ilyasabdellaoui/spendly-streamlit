@@ -19,7 +19,7 @@ def render_quick_add_form(data_manager) -> None:
         if st.form_submit_button("Add Transaction", use_container_width=True):
             try:
                 new_operation = {
-                    'date': datetime.now().strftime('%Y-%m-%d'),
+                    'entry_date': datetime.now().strftime('%Y-%m-%d'),
                     'description': description,
                     'amount': amount,
                     'type': op_type,
